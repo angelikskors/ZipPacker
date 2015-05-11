@@ -1,0 +1,45 @@
+.background {
+    -fx-background-color: derive(#1d1d1d,20%);
+
+}
+.button {
+    -fx-padding: 5 22 5 22;
+    -fx-border-color: #800080;
+    -fx-border-width: 5;
+    -fx-background-radius: 0;
+    -fx-background-color: #1d1d1d;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 14pt;
+    -fx-text-fill: #d8d8d8;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+    -fx-min-height: 70px;
+    -fx-min-width: 200px;
+}
+.text-area {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+
+}
+.label {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: white;
+    -fx-opacity: 0.6;
+}
+.text-field {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+.button-ok{
+   -fx-padding: 5 22 5 22;
+    -fx-border-color: #800080;
+    -fx-border-width: 3;
+    -fx-background-radius: 0.3;
+    -fx-background-color: #4D004D;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 14pt;
+    -fx-text-fill: #d8d8d8;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+    -fx-min-height: 40px;
+    -fx-min-width: 40px;
+}
