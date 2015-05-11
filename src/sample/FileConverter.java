@@ -1,11 +1,13 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
@@ -57,65 +59,90 @@ public class FileConverter {
     }
 
     public void packingDir(String name, TextArea textArea) {
-        ZipOutputStream zos =
-                createZipOutputStream("D://" + name + ".zip");
-        String[] sDirList = file.list();
-        int i;
-        try {
-            for (i = 0; i < sDirList.length; i++) {
-                File f1 = new File(
-                        file.getAbsolutePath() + File.separator + sDirList[i]);
-                l.info("found file " + f1.getAbsolutePath() );
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ZipOutputStream zos =
+                        createZipOutputStream("D://" + name + ".zip");
+                try {
+                    packFile(zos, file, textArea);
+                } finally {
+                    if(zos != null){
+                        try {
+                            zos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-                if (f1.isFile()) {
-                    addFileToZip(zos, file.getAbsolutePath() + File.separator,
-                            sDirList[i], textArea);
                 }
             }
-            zos.close();
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
+        }).start();
+    }
 
+    private void packFile(ZipOutputStream zos, File file, TextArea textArea){
+        if(file.isFile()){
+            addFileToZip(zos, file, textArea);
+        }else if(file.isDirectory()){
+            File[] files = file.listFiles();
+            for (File f : files) {
+                packFile(zos, f, textArea);
+            }
+        }
     }
 
     private static ZipOutputStream createZipOutputStream(String string) {
-        File tempfile;
         ZipOutputStream zos = null;
-        tempfile = new File(string);
+        File tempfile = new File(string);
         try {
             zos = new ZipOutputStream(
                     new FileOutputStream(tempfile));
+            zos.setLevel(
+                    Deflater.DEFAULT_COMPRESSION);
         } catch (FileNotFoundException e) {
-
-            e.printStackTrace();
+            l.log(Level.SEVERE, "", e);
         }
-        zos.setLevel(
-                Deflater.DEFAULT_COMPRESSION);
-
         return zos;
     }
 
-    static void addFileToZip(ZipOutputStream zos,
-                             String szPath, String szName, TextArea textArea) throws IOException {
+    private String correctFilePathInZip(File input){
+        String absolutePath = input.getAbsolutePath();
+        String rootPath = file.getAbsolutePath();
+        String filePath = absolutePath.substring(rootPath.length());
+        return filePath;
+    }
 
-        textArea.appendText(szPath + szName  + "\n");
-        ZipEntry ze;
-        ze = new ZipEntry(szName);
-        zos.putNextEntry(ze);
-        FileInputStream fis =
-                new FileInputStream(szPath + szName);
+    void addFileToZip(ZipOutputStream outputStream, File input, TextArea textArea) {
+        l.info(input.getAbsolutePath());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                textArea.appendText(input.getAbsolutePath() + "\n");
+            }
+        });
 
-        byte[] buf = new byte[8000];
-        int nLength;
-        while (true) {
-            nLength = fis.read(buf);
-            if (nLength < 0)
-                break;
-            zos.write(buf, 0, nLength);
+        ZipEntry ze = new ZipEntry(correctFilePathInZip(input));
+        FileInputStream fis = null;
+        try {
+            outputStream.putNextEntry(ze);
+            fis = new FileInputStream(input);
+            byte[] buffer = new byte[1024 * 8];
+            int readLength = -1;
+            while ((readLength = fis.read(buffer))!=-1){
+                outputStream.write(buffer, 0, readLength);
+            }
+            outputStream.closeEntry();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(fis != null){
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        fis.close();
-        zos.closeEntry();
     }
 
     private File openFile(String files) {
@@ -137,5 +164,4 @@ public class FileConverter {
         return null;
 
     }
-
 }
