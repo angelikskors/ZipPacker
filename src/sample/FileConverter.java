@@ -96,7 +96,8 @@ public class FileConverter {
     static void addFileToZip(ZipOutputStream zos,
                              String szPath, String szName, TextArea textArea) throws IOException {
 
-        textArea.setText(szPath + szName);
+        textArea.setText(textArea.getText()+" "+szPath + szName);
+
         ZipEntry ze;
         ze = new ZipEntry(szName);
         zos.putNextEntry(ze);
