@@ -20,36 +20,40 @@ import java.io.File;
 
 public class MainScreen extends VBox {
     private VBox ui;
-    final private  String CENTER="CENTER";
-   // final private  String RIGHT="RIGHT";
+    final private String CENTER = "CENTER";
+
     private TextArea textArea;
     private HBox image;
     private VBox uiBox;
     private boolean isOnProcess;
+    private Boolean zip;
     NameScreen little;
 
     MainScreen() {
-         uiBox = createUI();
+        uiBox = createUI();
 
 
     }
+
     MainScreen(boolean isOnProcess) {
         this();
-         this.isOnProcess = isOnProcess;
+        this.isOnProcess = isOnProcess;
 
-        if(isOnProcess){
+        if (isOnProcess) {
             addTextField();
             addImage(" ");
 
-        }else{addImage(CENTER);}
+        } else {
+            addImage(CENTER);
+        }
 
     }
 
     private void addTextField() {
         textArea = new TextArea();
         textArea.setEditable(false);
-       textArea.setFont(new Font("Times New Roman", 20));
-      textArea.setPrefSize(300, 830);
+        textArea.setFont(new Font("Times New Roman", 20));
+        textArea.setPrefSize(300, 830);
         textArea.getStyleClass().add("text-area");
 
         image.getChildren().add(textArea);
@@ -75,30 +79,38 @@ public class MainScreen extends VBox {
             @Override
             public void handle(ActionEvent event) {
                 addTextField();
-                createNameStage(textArea);
-   }
+                createNameStage(textArea, "Enter the name of zip", false);
+            }
         });
         Button unPack = new Button();
         unPack.setText("Unpack");
         buttons.getChildren().add(unPack);
-        image =new HBox();
-        image.setPadding(new Insets(10,10,10,10));
+        unPack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                addTextField();
+                createNameStage(textArea, "Enter the name of new directory", true);
+
+            }
+        });
+        image = new HBox();
+        image.setPadding(new Insets(10, 10, 10, 10));
         image.setSpacing(10);
         ui.getChildren().add(image);
 
         return ui;
     }
 
-    private void createNameStage(TextArea textArea) {
-         little=new NameScreen(textArea);
-        Stage newStage=new Stage();
+    private void createNameStage(TextArea textArea, String label, Boolean zip) {
+        little = new NameScreen(textArea, label, zip);
+        Stage newStage = new Stage();
         newStage.setTitle("INPUT");
         Scene scene = new Scene(little, 360, 140);
         newStage.setScene(scene);
         newStage.show();
     }
 
-    private void addImage(String position){
+    private void addImage(String position) {
 
         Image image1 = new Image("file:rar.png");
         ImageView imageView = new ImageView();
@@ -106,17 +118,14 @@ public class MainScreen extends VBox {
         imageView.setFitHeight(150);
         imageView.setFitWidth(150);
 
-        if(position.equals(CENTER)){
+        if (position.equals(CENTER)) {
 
-           image.setAlignment(Pos.CENTER);
+            image.setAlignment(Pos.CENTER);
         }
         image.getChildren().add(imageView);
 
 
     }
-    private void giveNameZip(){
-        Stage newStage=new Stage();
 
-    }
 
 }

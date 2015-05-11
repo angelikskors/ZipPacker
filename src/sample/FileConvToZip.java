@@ -13,46 +13,18 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class FileConverter {
-    private static final Logger l = Logger.getLogger(FileConverter.class.getSimpleName());
+public class FileConvToZip {
+    private static final Logger l = Logger.getLogger(FileConvToZip.class.getSimpleName());
     final private String DIR = "DIR";
     final private String ZIP = "ZIP";
-    private String fileFrom;
-    private String fileTo;
+
     private File file;
-    private TextArea textArea;
 
-    public File getFile() {
-        return file;
+
+    FileConvToZip(String forFile) {
     }
 
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getFileFrom() {
-        return fileFrom;
-    }
-
-    public void setFileFrom(String fileFrom) {
-        this.fileFrom = fileFrom;
-    }
-
-    public String getFileTo() {
-        return fileTo;
-    }
-
-    public void setFileTo(String fileTo) {
-        this.fileTo = fileTo;
-    }
-
-    FileConverter(String fileFrom, String fileTo) {
-        setFileFrom(fileFrom);
-        setFileTo(fileTo);
-
-    }
-
-    FileConverter() {
+    FileConvToZip() {
 
         this.file = openFile("DIR");
 
@@ -67,7 +39,7 @@ public class FileConverter {
                 try {
                     packFile(zos, file, textArea);
                 } finally {
-                    if(zos != null){
+                    if (zos != null) {
                         try {
                             zos.close();
                         } catch (IOException e) {
@@ -80,10 +52,10 @@ public class FileConverter {
         }).start();
     }
 
-    private void packFile(ZipOutputStream zos, File file, TextArea textArea){
-        if(file.isFile()){
+    private void packFile(ZipOutputStream zos, File file, TextArea textArea) {
+        if (file.isFile()) {
             addFileToZip(zos, file, textArea);
-        }else if(file.isDirectory()){
+        } else if (file.isDirectory()) {
             File[] files = file.listFiles();
             for (File f : files) {
                 packFile(zos, f, textArea);
@@ -105,7 +77,7 @@ public class FileConverter {
         return zos;
     }
 
-    private String correctFilePathInZip(File input){
+    private String correctFilePathInZip(File input) {
         String absolutePath = input.getAbsolutePath();
         String rootPath = file.getAbsolutePath();
         String filePath = absolutePath.substring(rootPath.length());
@@ -128,14 +100,14 @@ public class FileConverter {
             fis = new FileInputStream(input);
             byte[] buffer = new byte[1024 * 8];
             int readLength = -1;
-            while ((readLength = fis.read(buffer))!=-1){
+            while ((readLength = fis.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, readLength);
             }
             outputStream.closeEntry();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if(fis != null){
+        } finally {
+            if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
@@ -145,18 +117,24 @@ public class FileConverter {
         }
     }
 
-    private File openFile(String files) {
+    public File openFile(String files) {
         Stage stage = new Stage();
         DirectoryChooser directoryChooser = new DirectoryChooser();
+        FileChooser fileChooser = new FileChooser();
 
         directoryChooser.setTitle("Open Resource File");
-        String path;
+
 
         if (files.equals(DIR)) {
             file = directoryChooser.showDialog(stage);
-        } else {
-        }
+        } else if (files.equals(ZIP)) {
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("ZIP", "*.zip")
 
+            );
+            file = fileChooser.showOpenDialog(stage);
+
+        }
 
         if (file != null) {
             return file;

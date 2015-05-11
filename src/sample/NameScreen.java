@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public class NameScreen extends VBox {
@@ -18,7 +19,8 @@ public class NameScreen extends VBox {
     private String nameInput;
     private TextArea textArea;
 
-    NameScreen(TextArea textArea) {
+
+    NameScreen(TextArea textArea, String label, Boolean zip) {
         this.textArea = textArea;
         File style = new File("style.css");
         getStylesheets().add(style.toURI().toString());
@@ -32,7 +34,7 @@ public class NameScreen extends VBox {
         vBox.getChildren().add(hBox);
         Label newLabel = new Label();
         newLabel.getStyleClass().add("label");
-        newLabel.setText("Enter the name of zip");
+        newLabel.setText(label);
         hBox.getChildren().add(newLabel);
         HBox text = new HBox();
         vBox.getChildren().add(text);
@@ -49,7 +51,16 @@ public class NameScreen extends VBox {
             @Override
             public void handle(ActionEvent event) {
 
-                new FileConverter().packingDir(returnName(), textArea);
+
+                if (zip) {
+                    try {
+                        new FileConvFromZip().unpackDir(returnName(), textArea);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    new FileConvToZip().packingDir(returnName(), textArea);
+                }
             }
 
 
