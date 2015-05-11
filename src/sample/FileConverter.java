@@ -6,11 +6,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.logging.Logger;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FileConverter {
+    private static final Logger l = Logger.getLogger(FileConverter.class.getSimpleName());
     final private String DIR = "DIR";
     final private String ZIP = "ZIP";
     private String fileFrom;
@@ -63,6 +65,7 @@ public class FileConverter {
             for (i = 0; i < sDirList.length; i++) {
                 File f1 = new File(
                         file.getAbsolutePath() + File.separator + sDirList[i]);
+                l.info("found file " + f1.getAbsolutePath() );
 
                 if (f1.isFile()) {
                     addFileToZip(zos, file.getAbsolutePath() + File.separator,
@@ -96,7 +99,7 @@ public class FileConverter {
     static void addFileToZip(ZipOutputStream zos,
                              String szPath, String szName, TextArea textArea) throws IOException {
 
-        textArea.setText(szPath + szName);
+        textArea.appendText(szPath + szName  + "\n");
         ZipEntry ze;
         ze = new ZipEntry(szName);
         zos.putNextEntry(ze);
