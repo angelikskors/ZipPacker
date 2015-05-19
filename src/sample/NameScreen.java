@@ -3,13 +3,17 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 
+import javax.lang.model.element.Name;
 import java.io.File;
 import java.io.IOException;
 
@@ -19,7 +23,9 @@ public class NameScreen extends VBox {
     private String nameInput;
     private TextArea textArea;
 
+    NameScreen() {
 
+    }
     NameScreen(TextArea textArea, String label, Boolean zip) {
         this.textArea = textArea;
         File style = new File("style.css");
@@ -50,8 +56,6 @@ public class NameScreen extends VBox {
         ok.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-
                 if (zip) {
                     try {
                         new FileConvFromZip().unpackDir(returnName(), textArea);
@@ -78,12 +82,28 @@ public class NameScreen extends VBox {
 
     }
 
+
     public String getNameInput() {
         return nameInput;
     }
 
     public void setNameInput(String nameInput) {
         this.nameInput = name.getText();
+    }
+
+    public void createWindowProgress(ProgressBar pb, ProgressIndicator pi) {
+        Group root = new Group();
+        Scene scene = new Scene(root);
+        Stage newStage = new Stage();
+        newStage.setScene(scene);
+        newStage.setTitle("Progress Controls");
+        HBox hb = new HBox();
+        hb.setSpacing(5);
+        hb.setAlignment(Pos.CENTER);
+        hb.getChildren().addAll(pb, pi);
+        scene.setRoot(hb);
+        newStage.show();
+
     }
 
 

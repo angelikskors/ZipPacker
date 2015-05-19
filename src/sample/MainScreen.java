@@ -4,7 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -19,15 +22,14 @@ import java.io.File;
 
 
 public class MainScreen extends VBox {
-    private VBox ui;
     final private String CENTER = "CENTER";
-
+    NameScreen little;
+    private VBox ui;
     private TextArea textArea;
     private HBox image;
     private VBox uiBox;
     private boolean isOnProcess;
     private Boolean zip;
-    NameScreen little;
 
     MainScreen() {
         uiBox = createUI();
@@ -109,6 +111,7 @@ public class MainScreen extends VBox {
         newStage.setScene(scene);
         newStage.show();
     }
+
 
     private void addImage(String position) {
 
